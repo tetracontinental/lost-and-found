@@ -1,0 +1,26 @@
+// Lost and Found Prisma schema
+// 場所は例として3つ用意
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String
+  description String
+  location  Location @relation(fields: [locationId], references: [id])
+  locationId Int
+  createdAt DateTime @default(now())
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  items Item[]
+}

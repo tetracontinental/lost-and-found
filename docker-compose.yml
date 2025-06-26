@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: lostandfound
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lostandfound
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  app:
+    build: .
+    command: npm run dev
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgres://lostandfound:password@db:5432/lostandfound
+    depends_on:
+      - db
+volumes:
+  db_data:
