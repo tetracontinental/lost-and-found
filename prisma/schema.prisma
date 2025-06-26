@@ -11,16 +11,31 @@ datasource db {
 }
 
 model Item {
-  id        Int      @id @default(autoincrement())
-  imageUrl  String
+  id          Int      @id @default(autoincrement())
+  images      Image[]
   description String
-  location  Location @relation(fields: [locationId], references: [id])
-  locationId Int
-  createdAt DateTime @default(now())
+  location    Location @relation(fields: [locationId], references: [id])
+  locationId  Int
+  createdAt   DateTime @default(now())
+}
+
+model Image {
+  id      Int    @id @default(autoincrement())
+  data    Bytes
+  item    Item   @relation(fields: [itemId], references: [id])
+  itemId  Int
+  url     String @unique
 }
 
 model Location {
   id   Int    @id @default(autoincrement())
   name String @unique
   items Item[]
+}
+
+model Information {
+  id        Int      @id @default(autoincrement())
+  message   String
+  type      String  @default("info")
+  createdAt DateTime @default(now())
 }

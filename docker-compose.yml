@@ -1,15 +1,11 @@
 services:
-  db:
-    image: postgres:15
+  mongo:
+    image: mongo:6
     restart: always
-    environment:
-      POSTGRES_USER: lostandfound
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: lostandfound
     ports:
-      - '5432:5432'
+      - '27017:27017'
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - mongo_data:/data/db
   app:
     build: .
     command: npm run dev
@@ -19,8 +15,10 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: postgres://lostandfound:password@db:5432/lostandfound
+      MONGODB_URI: mongodb://mongo:27017/lostandfound
+      NEXT_PUBLIC_ADMIN_USERNAME: admin
+      NEXT_PUBLIC_ADMIN_PASSWORD: password123
     depends_on:
-      - db
+      - mongo
 volumes:
-  db_data:
+  mongo_data:

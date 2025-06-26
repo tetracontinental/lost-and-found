@@ -8,20 +8,13 @@
 npm install
 ```
 
-2. DBマイグレーション & 初期データ投入
-
-```
-npx prisma migrate dev --name init
-psql -h localhost -U lostandfound -d lostandfound -f prisma/seed.sql
-```
-
-3. 開発サーバー起動（Docker Compose）
+2. MongoDBの起動（Docker Compose）
 
 ```
 docker-compose up --build
 ```
 
-4. サイトにアクセス
+3. サイトにアクセス
 
 - http://localhost:3000
 
@@ -29,5 +22,21 @@ docker-compose up --build
 - 落とし物一覧・検索
 - 落とし物登録
 - 画像・説明・場所（プルダウン）
-- Prisma + Next.js API
+- MongoDB + Next.js API
 - モダンなUI
+- お知らせ（informationsコレクションで管理、管理画面やmongo shellで追加可能）
+
+## お知らせ（Information）管理について
+- `src/pages/api/informations.js` でAPI化
+- `src/lib/information.js` でMongoDB操作
+- `src/components/InformationBanner.js` で表示
+- MongoDBの `informations` コレクションに下記のようなドキュメントを追加すると、トップページに反映されます
+
+例:
+```
+{
+  message: "落とし物の受け渡しは平日9:00〜17:00です",
+  type: "info",
+  createdAt: new Date()
+}
+```
