@@ -1,0 +1,12 @@
+name = "lost-and-found"
+compatibility_date = "2025-06-28"
+main = "src/pages/api/informations.js"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lost_and_found_db"
+database_id = "ここにD1のDatabase IDを記載"
+    
+[site]
+bucket = "./public"
+# entry-pointは削除

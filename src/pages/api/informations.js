@@ -1,14 +1,22 @@
 import { getInformations, addInformation } from '../../lib/information';
 
-export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    const informations = await getInformations();
-    res.status(200).json(informations);
-  } else if (req.method === 'POST') {
-    const { message, type } = req.body;
-    const id = await addInformation({ message, type });
-    res.status(201).json({ id });
+export async function onRequest(context) {
+  const { request, env } = context;
+  if (request.method === 'GET') {
+    const informations = await getInformations(env);
+    return new Response(JSON.stringify(informations), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } else if (request.method === 'POST') {
+    const body = await request.json();
+    const { message, type } = body;
+    const id = await addInformation(env, { message, type });
+    return new Response(JSON.stringify({ id }), {
+      status: 201,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } else {
-    res.status(405).end();
+    return new Response('Method Not Allowed', { status: 405 });
   }
 }

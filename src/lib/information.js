@@ -1,14 +1,14 @@
-import clientPromise from './mongodb';
+import { queryDB, executeDB } from './d1';
 
-export async function getInformations() {
-  const client = await clientPromise;
-  const db = client.db();
-  return db.collection('informations').find({}).sort({ createdAt: -1 }).toArray();
+export async function getInformations(env) {
+  const sql = 'SELECT id, message, type, createdAt FROM informations ORDER BY createdAt DESC';
+  const { results } = await queryDB(env, sql);
+  return results;
 }
 
-export async function addInformation({ message, type = 'info' }) {
-  const client = await clientPromise;
-  const db = client.db();
-  const result = await db.collection('informations').insertOne({ message, type, createdAt: new Date() });
-  return result.insertedId;
+export async function addInformation(env, { message, type = 'info' }) {
+  const sql = 'INSERT INTO informations (message, type, createdAt) VALUES (?, ?, ?)';
+  const now = new Date().toISOString();
+  const result = await executeDB(env, sql, [message, type, now]);
+  return result.lastRowId;
 }
